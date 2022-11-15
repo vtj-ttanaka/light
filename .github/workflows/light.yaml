@@ -26,8 +26,8 @@ jobs:
         id: yaml-data
         uses: jbutcher5/read-yaml@main
         with:
-          file: ./config.yaml
-          key-path: ["bot", "command"]
+          file: './config.yaml'
+          key-path: '["bot", "command"]'
 
       - name: light toggle
         run: |
