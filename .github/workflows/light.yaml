@@ -1,0 +1,31 @@
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  light_toggle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: generate sign
+        run: |
+          token="${{ secrets.token }}"
+          secret="${{ secrets.secret }}"
+          t="$(date +%s%3N)"
+          nonce="$(uuidgen)"
+          sign="$(echo -n "$token$t$nonce" | openssl dgst -binary -sha256 -hmac "$secret" | base64)"
+          echo "::set-output t=$t"
+          echo "::set-output nonce=$nonce"
+          echo "::set-output sign=$sign"
+        id: sign
+      - name: light toggle
+        run: |
+          data='{"command": "press", "paramter": "default", "commandType": "default"}'
+          curl -X GET \
+               -H "Authorization: ${{ secrets.token }}" \
+               -H "t: ${{ steps.sign.outputs.t }}" \
+               -H "sign: ${{ steps.sign.outputs.sign }}" \
+               -H "nonce: ${{ steps.sign.outputs.nonce }}" \
+               -d "$data" \
+               https://api.switch-bot.com/v1.1/devices/${{ secrets.deviceid }}/commands"
