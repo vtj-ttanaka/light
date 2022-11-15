@@ -15,9 +15,9 @@ jobs:
           t="$(date +%s%3N)"
           nonce="$(uuidgen)"
           sign="$(echo -n "$token$t$nonce" | openssl dgst -binary -sha256 -hmac "$secret" | base64)"
-          echo "::set-output t=$t"
-          echo "::set-output nonce=$nonce"
-          echo "::set-output sign=$sign"
+          echo "t=$t" >> $GITHUB_OUTPUT
+          echo "nonce=$nonce" >> $GITHUB_OUTPUT
+          echo "sign=$sign" >> $GITHUB_OUTPUT
         id: sign
       - name: light toggle
         run: |
@@ -28,4 +28,4 @@ jobs:
                -H "sign: ${{ steps.sign.outputs.sign }}" \
                -H "nonce: ${{ steps.sign.outputs.nonce }}" \
                -d "$data" \
-               https://api.switch-bot.com/v1.1/devices/${{ secrets.deviceid }}/commands"
+               "https://api.switch-bot.com/v1.1/devices/${{ secrets.deviceid }}/commands"
