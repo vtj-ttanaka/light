@@ -8,7 +8,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: generate sign
+
+      - name: Generate sign
+        id: sign
         run: |
           token="${{ secrets.token }}"
           secret="${{ secrets.secret }}"
@@ -18,7 +20,15 @@ jobs:
           echo "t=$t" >> $GITHUB_OUTPUT
           echo "nonce=$nonce" >> $GITHUB_OUTPUT
           echo "sign=$sign" >> $GITHUB_OUTPUT
-        id: sign
+
+
+      - name: Run read-yaml action
+        id: yaml-data
+        uses: jbutcher5/read-yaml@main
+        with:
+          file: ./config.yaml
+          key-path: ["bot", "command"]
+
       - name: light toggle
         run: |
           curl -X POST \
@@ -27,5 +37,5 @@ jobs:
                -H "t: ${{ steps.sign.outputs.t }}" \
                -H "sign: ${{ steps.sign.outputs.sign }}" \
                -H "nonce: ${{ steps.sign.outputs.nonce }}" \
-               -d '{"command": "press", "paramter": "default", "commandType": "default"}' \
+               -d '{"command": "${{ steps.yaml-data.outputs.data }}", "paramter": "default", "commandType": "default"}' \
                "https://api.switch-bot.com/v1.1/devices/${{ secrets.deviceid }}/commands"
