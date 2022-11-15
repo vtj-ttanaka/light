@@ -37,5 +37,5 @@ jobs:
                -H "t: ${{ steps.sign.outputs.t }}" \
                -H "sign: ${{ steps.sign.outputs.sign }}" \
                -H "nonce: ${{ steps.sign.outputs.nonce }}" \
-               -d '{"command": "${{ steps.yaml-data.outputs.data }}", "paramter": "default", "commandType": "default"}' \
+               -d '{"command": "'${{ steps.yaml-data.outputs.data }}'", "paramter": "default", "commandType": "default"}' \
                "https://api.switch-bot.com/v1.1/devices/${{ secrets.deviceid }}/commands"
