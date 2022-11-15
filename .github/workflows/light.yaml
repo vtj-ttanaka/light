@@ -21,11 +21,11 @@ jobs:
         id: sign
       - name: light toggle
         run: |
-          data='{"command": "press", "paramter": "default", "commandType": "default"}'
-          curl -X GET \
+          curl -X POST \
+               -H "Content-Type: application/json; charset=utf8" \
                -H "Authorization: ${{ secrets.token }}" \
                -H "t: ${{ steps.sign.outputs.t }}" \
                -H "sign: ${{ steps.sign.outputs.sign }}" \
                -H "nonce: ${{ steps.sign.outputs.nonce }}" \
-               -d "$data" \
+               -d '{"command": "press", "paramter": "default", "commandType": "default"}' \
                "https://api.switch-bot.com/v1.1/devices/${{ secrets.deviceid }}/commands"
