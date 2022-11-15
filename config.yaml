@@ -1,4 +1,6 @@
 # https://github.com/OpenWonderLabs/SwitchBotAPI#bot-2
 
 bot:
+  # command: turnOff
   command: turnOn
+  # command: press
